@@ -132,4 +132,5 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 !.vscode/settings.json
 
+node_modules/
 .env
