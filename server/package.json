@@ -1,0 +1,13 @@
+{
+  "name": "sosu-web-client",
+  "version": "0.0.1",
+  "description": "소수 웹 페이지 입니다.",
+  "scripts": {
+    "start": "set NODE_EVN=.env && node sosu-web-client.js&"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.6",
+    "dotenv": "^16.0.3",
+    "express": "~4.18.2"
+  }
+}
