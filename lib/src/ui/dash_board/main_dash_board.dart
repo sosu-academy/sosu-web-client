@@ -16,20 +16,15 @@ class MainDashBoardPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // 데이터를 정상적으로 가져왔을 때 처리
         if (snapshot.hasData) {
-          List<Center> childView = [];
+          List<Widget> childView = [];
           ApiResponse<PayloadList<GoodsEntity>> response =
               snapshot.data as ApiResponse<PayloadList<GoodsEntity>>;
           List<GoodsEntity> list = response.data?.list ?? [];
-          for (var element in list) {
-            childView.add(Center(
-                child: Text(
-                    "${element.uid}_${element.title}_${element.message}")));
-          }
-          return Scaffold(
-            body: Column(
-              children: childView,
-            ),
-          );
+          return ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context,index) {
+                return ListTile(title: Text("${list[index].title}_${list[index].message}"));
+          });
         } else if (snapshot.hasError) {
           // 오류 발생 시 처리
           return Text('Error: ${snapshot.error}');
@@ -38,7 +33,7 @@ class MainDashBoardPage extends StatelessWidget {
           return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Center(child: Text("테스트를 위해 서버 딜레이 3초입니다.")),
+                Center(child: Text("테스트를 위해 서버 딜레이 1초입니다.")),
                 Center(child: CircularProgressIndicator())
               ]);
         }
