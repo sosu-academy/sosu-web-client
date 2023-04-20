@@ -38,7 +38,7 @@ class HttpClient {
 
   Future<ApiResponse<PayloadList<GoodsEntity>>> fetchGoods() async {
     final res = await http.get(
-        Uri.parse("$BASE_URL/api/til/goods?pageNo=1&pageSize=25"),
+        Uri.parse("$BASE_URL/api/til/goods?pageNo=1&pageSize=200"),
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods":
@@ -46,7 +46,7 @@ class HttpClient {
           "Access-Control-Allow-Headers":
               "Origin, X-Requested-With, Content-Type, Accept"
         });
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     if (res.statusCode == 200) {
       try {
         final json = jsonDecode(res.body);
