@@ -1,12 +1,14 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:sosu_web/src/HttpClient.dart';
-import 'dart:async';
-
-import 'package:sosu_web/src/JLogger.dart';
-
+import 'package:side_navigation/side_navigation.dart';
+import 'package:sosu_web/src/icons/teacher_icon.dart';
+import 'package:sosu_web/src/network/http_client.dart';
+import 'package:sosu_web/src/ui/dash_board/main_dash_board.dart';
+import 'package:sosu_web/src/ui/design_system/main_design_system.dart';
+import 'package:sosu_web/src/ui/settings/main_settings.dart';
+import 'package:sosu_web/src/ui/student/main_student.dart';
+import 'package:sosu_web/src/ui/table.dart';
+import 'package:sosu_web/src/ui/teacher/main_teacher.dart';
+import 'package:sosu_web/src/utils/j_logger.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,18 +23,86 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SOSU Web',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+        secondaryHeaderColor: Colors.amber,
+        primaryColor: Colors.blueAccent,
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MainView(),
+    );
+  }
+}
+
+class MainView extends StatefulWidget {
+  const MainView({Key? key}) : super(key: key);
+
+  @override
+  _MainViewState createState() => _MainViewState();
+}
+
+class Views {
+  final SideNavigationBarItem navigation;
+  final Widget page;
+
+  Views(this.navigation, this.page);
+}
+
+class _MainViewState extends State<MainView> {
+  List<Views> views = [
+    Views(const SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
+        const MainDashBoardPage()),
+    Views(const SideNavigationBarItem(icon: Icons.person, label: "학생"),
+        const MainStudentPage()),
+    Views(const SideNavigationBarItem(icon: Teacher.teacher, label: "선생님"),
+        const MainTeacherPage()),
+    Views(
+        const SideNavigationBarItem(
+            icon: Icons.card_giftcard, label: "디자인 컴포넌트"),
+        const MainDesignSystemPage()),
+    Views(const SideNavigationBarItem(icon: Icons.table_chart, label: "테이블"),
+        const MainTablePage()),
+    Views(const SideNavigationBarItem(icon: Icons.settings, label: "셋팅"),
+        const MainSettingsPage()),
+  ];
+
+  int selectedIndex = 0; // 현재 선택한 네비게이션 위치값
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          // MainSideNavigation(
+          // selectedIndex: selectedIndex,
+          // onTap: (index) {
+          //   setState(() {
+          //     selectedIndex = index;
+          //   });
+          // }),
+          SideNavigationBar(
+            selectedIndex: selectedIndex,
+            items: views.map((e) => e.navigation).toList(),
+            onTap: (index) {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+            toggler: SideBarToggler(
+                expandIcon: Icons.keyboard_arrow_left,
+                shrinkIcon: Icons.keyboard_arrow_right,
+                onToggle: () {}),
+            header: const SideNavigationBarHeader(
+                image: CircleAvatar(child: Icon(Icons.school)),
+                title: Text("SOSU Academy",
+                    style: TextStyle(fontSize: 22), textAlign: TextAlign.left),
+                subtitle: Text("Hello")),
+            footer:
+                const SideNavigationBarFooter(label: Text("DesignBy sieunju")),
+          ),
+          Expanded(
+            child: views.elementAt(selectedIndex).page,
+          )
+        ],
+      ),
     );
   }
 }
