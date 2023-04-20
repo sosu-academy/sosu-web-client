@@ -1,13 +1,13 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:side_navigation/side_navigation.dart';
 import 'package:sosu_web/src/icons/teacher_icon.dart';
 import 'package:sosu_web/src/network/http_client.dart';
-import 'package:sosu_web/src/ui/side_navigation/side_navigation_bar.dart';
-import 'dart:async';
-
+import 'package:sosu_web/src/ui/dash_board/main_dash_board.dart';
+import 'package:sosu_web/src/ui/design_system/main_design_system.dart';
+import 'package:sosu_web/src/ui/settings/main_settings.dart';
+import 'package:sosu_web/src/ui/student/main_student.dart';
+import 'package:sosu_web/src/ui/table.dart';
+import 'package:sosu_web/src/ui/teacher/main_teacher.dart';
 import 'package:sosu_web/src/utils/j_logger.dart';
 
 void main() {
@@ -39,28 +39,31 @@ class MainView extends StatefulWidget {
   _MainViewState createState() => _MainViewState();
 }
 
+class Views {
+  final SideNavigationBarItem navigation;
+  final Widget page;
+
+  Views(this.navigation, this.page);
+}
+
 class _MainViewState extends State<MainView> {
-
-  List<SideNavigationBarItem> navigationItems = const [
-    SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
-    SideNavigationBarItem(icon: Icons.person, label: "학생"),
-    SideNavigationBarItem(icon: Teacher.teacher, label: "선생님"),
-    SideNavigationBarItem(icon: Icons.card_giftcard, label: "디자인 컴포넌트"),
-    SideNavigationBarItem(icon: Icons.table_chart, label: "테이블"),
-    SideNavigationBarItem(icon: Icons.settings, label: "Settings")
+  List<Views> views = [
+    Views(const SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
+        const MainDashBoardPage()),
+    Views(const SideNavigationBarItem(icon: Icons.person, label: "학생"),
+        const MainStudentPage()),
+    Views(const SideNavigationBarItem(icon: Teacher.teacher, label: "선생님"),
+        const MainTeacherPage()),
+    Views(
+        const SideNavigationBarItem(
+            icon: Icons.card_giftcard, label: "디자인 컴포넌트"),
+        const MainDesignSystemPage()),
+    Views(const SideNavigationBarItem(icon: Icons.table_chart, label: "테이블"),
+        const MainTablePage()),
+    Views(const SideNavigationBarItem(icon: Icons.settings, label: "셋팅"),
+        const MainSettingsPage()),
   ];
 
-  List<Widget> views = const [
-    Center(
-      child: Text('Dashboard'),
-    ),
-    Center(
-      child: Text('Account'),
-    ),
-    Center(
-      child: Text('Settings'),
-    ),
-  ];
   int selectedIndex = 0; // 현재 선택한 네비게이션 위치값
 
   @override
@@ -77,7 +80,7 @@ class _MainViewState extends State<MainView> {
           // }),
           SideNavigationBar(
             selectedIndex: selectedIndex,
-            items: navigationItems,
+            items: views.map((e) => e.navigation).toList(),
             onTap: (index) {
               setState(() {
                 selectedIndex = index;
@@ -86,12 +89,17 @@ class _MainViewState extends State<MainView> {
             toggler: SideBarToggler(
                 expandIcon: Icons.keyboard_arrow_left,
                 shrinkIcon: Icons.keyboard_arrow_right,
-                onToggle: () {
-                  print('Toggle');
-                }),
+                onToggle: () {}),
+            header: const SideNavigationBarHeader(
+                image: CircleAvatar(child: Icon(Icons.school)),
+                title: Text("SOSU Academy",
+                    style: TextStyle(fontSize: 22), textAlign: TextAlign.left),
+                subtitle: Text("Hello")),
+            footer:
+                const SideNavigationBarFooter(label: Text("DesignBy sieunju")),
           ),
           Expanded(
-            child: views.elementAt(selectedIndex),
+            child: views.elementAt(selectedIndex).page,
           )
         ],
       ),
