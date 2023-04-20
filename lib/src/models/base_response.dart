@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sosu_web/src/utils/j_logger.dart';
 
 part 'base_response.g.dart';
 
@@ -56,7 +55,6 @@ class PayloadList<T> {
 
   factory PayloadList.fromJson(
       Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
-    JLogger.d("Payload Json $json");
     return _$PayloadListFromJson(json, fromJsonT);
   }
 

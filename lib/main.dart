@@ -79,25 +79,26 @@ class _MainViewState extends State<MainView> {
           //   });
           // }),
           SideNavigationBar(
-            selectedIndex: selectedIndex,
-            items: views.map((e) => e.navigation).toList(),
-            onTap: (index) {
-              setState(() {
-                selectedIndex = index;
-              });
-            },
-            toggler: SideBarToggler(
-                expandIcon: Icons.keyboard_arrow_left,
-                shrinkIcon: Icons.keyboard_arrow_right,
-                onToggle: () {}),
-            header: const SideNavigationBarHeader(
-                image: CircleAvatar(child: Icon(Icons.school)),
-                title: Text("SOSU Academy",
-                    style: TextStyle(fontSize: 22), textAlign: TextAlign.left),
-                subtitle: Text("Hello")),
-            footer:
-                const SideNavigationBarFooter(label: Text("DesignBy sieunju")),
-          ),
+              selectedIndex: selectedIndex,
+              items: views.map((e) => e.navigation).toList(),
+              onTap: (index) {
+                setState(() {
+                  selectedIndex = index;
+                });
+              },
+              toggler: SideBarToggler(
+                  expandIcon: Icons.keyboard_arrow_left,
+                  shrinkIcon: Icons.keyboard_arrow_right,
+                  onToggle: () {}),
+              header: const SideNavigationBarHeader(
+                  image: CircleAvatar(child: Icon(Icons.school)),
+                  title: Text("SOSU Academy",
+                      style: TextStyle(fontSize: 22),
+                      textAlign: TextAlign.left),
+                  subtitle: Text("Hello")),
+              footer: const SideNavigationBarFooter(
+                  label: Text("DesignBy sieunju")),
+              initiallyExpanded: false),
           Expanded(
             child: views.elementAt(selectedIndex).page,
           )
