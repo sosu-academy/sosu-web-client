@@ -15,5 +15,11 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-dd
-eee
+### 사용 라이브러리
+
+---
+- [HTTP Network](https://pub.dev/packages/http)
+- [SideNavigationBar](https://pub.dev/packages/side_navigation)
+- [Logger](https://pub.dev/packages/logger)
+- [Analyzer Plugin](https://pub.dev/packages/analyzer_plugin)
+-  flutter pub run build_runner build
