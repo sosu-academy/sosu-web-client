@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:side_navigation/side_navigation.dart';
 import 'package:sosu_web/src/icons/teacher_icon.dart';
 import 'package:sosu_web/src/network/http_client.dart';
@@ -8,9 +9,9 @@ import 'package:sosu_web/src/ui/settings/main_settings.dart';
 import 'package:sosu_web/src/ui/student/main_student.dart';
 import 'package:sosu_web/src/ui/table.dart';
 import 'package:sosu_web/src/ui/teacher/main_teacher.dart';
-import 'package:sosu_web/src/utils/j_logger.dart';
 
-void main() {
+void main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 

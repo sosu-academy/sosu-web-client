@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sosu_web/src/models/base_response.dart';
 
 import '../models/goods_entity.dart';
 import 'http_interceptor.dart';
 
 class HttpClient {
-  static const BASE_URL = "https://node.qtzz.synology.me";
-
   late Dio _client;
 
   Dio initClient() {
+    final String baseUrl = dotenv.env['BASE_URL']!;
     return Dio(BaseOptions(
-        baseUrl: "https://node.qtzz.synology.me",
+        baseUrl: baseUrl,
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods":
