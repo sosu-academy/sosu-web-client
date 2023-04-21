@@ -137,7 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      client.fetchTest().then((value) => JLogger.d(value));
       _counter++;
     });
   }

@@ -1,16 +1,38 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:sosu_web/src/models/base_response.dart';
 
 import '../models/goods_entity.dart';
+import 'http_interceptor.dart';
 
 class HttpClient {
   static const BASE_URL = "https://node.qtzz.synology.me";
 
-  HttpClient._privateConstructor();
+  late Dio _client;
+
+  Dio initClient() {
+    return Dio(BaseOptions(
+        baseUrl: "https://node.qtzz.synology.me",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods":
+              "POST, GET, OPTIONS, PUT, DELETE, HEAD",
+          "Access-Control-Allow-Headers":
+              "Origin, X-Requested-With, Content-Type, Accept",
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        connectTimeout: 5000,
+        receiveTimeout: 5000,
+        sendTimeout: 5000,
+        validateStatus: (status) => status! < 500));
+  }
+
+  HttpClient._privateConstructor() {
+    _client = initClient();
+    _client.interceptors
+        .addAll([TokenInterceptor("Token Test"), LoggingInterceptor()]);
+  }
 
   static final HttpClient _instance = HttpClient._privateConstructor();
 
@@ -18,39 +40,14 @@ class HttpClient {
     return _instance;
   }
 
-  Future<String> fetchTest() async {
-    final res = await http.get(
-        Uri.parse("$BASE_URL/api/til/goods?pageNo=1&pageSize=25"),
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods":
-              "POST, GET, OPTIONS, PUT, DELETE, HEAD",
-          "Access-Control-Allow-Headers":
-              "Origin, X-Requested-With, Content-Type, Accept"
-        });
-    if (res.statusCode == 200) {
-      jsonDecode(res.body);
-      return res.body;
-    } else {
-      throw Exception("Error");
-    }
-  }
-
   Future<ApiResponse<PayloadList<GoodsEntity>>> fetchGoods() async {
-    final res = await http.get(
-        Uri.parse("$BASE_URL/api/til/goods?pageNo=1&pageSize=200"),
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods":
-              "POST, GET, OPTIONS, PUT, DELETE, HEAD",
-          "Access-Control-Allow-Headers":
-              "Origin, X-Requested-With, Content-Type, Accept"
-        });
+    final Response res = await _client.get("/api/til/goods",
+        queryParameters: {"pageNo": "1", "pageSize": "200"});
     await Future.delayed(const Duration(seconds: 1));
     if (res.statusCode == 200) {
       try {
-        final json = jsonDecode(res.body);
-        return ApiResponse<PayloadList<GoodsEntity>>.fromJson(json, (dataJson) {
+        return ApiResponse<PayloadList<GoodsEntity>>.fromJson(res.data,
+            (dataJson) {
           return PayloadList.fromJson(dataJson, (payloadJson) {
             return GoodsEntity.fromJson(payloadJson);
           });

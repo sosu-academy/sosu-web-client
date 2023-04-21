@@ -16,7 +16,6 @@ class MainDashBoardPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // 데이터를 정상적으로 가져왔을 때 처리
         if (snapshot.hasData) {
-          List<Widget> childView = [];
           ApiResponse<PayloadList<GoodsEntity>> response =
               snapshot.data as ApiResponse<PayloadList<GoodsEntity>>;
           List<GoodsEntity> list = response.data?.list ?? [];
