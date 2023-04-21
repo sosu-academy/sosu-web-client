@@ -134,3 +134,4 @@ app.*.symbols
 
 node_modules/
 assets/.env
+.env
