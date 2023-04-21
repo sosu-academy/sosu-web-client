@@ -34,7 +34,7 @@ dependencies:
   side_navigation: ^1.0.4 # Visual
   analyzer_plugin: ^0.11.2 # Grammar? :)
   json_annotation: ^4.8.0 # json_serializable
-  dio: ^4.0.0 # Network Lib
+  dio: ^5.1.1 # Network Lib
   flutter_dotenv: ^5.0.0 # Environment
 
 
@@ -45,8 +45,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.5
-  build_web_compilers: ^3.0.0
+  build_runner: ^2.3.3
+  build_web_compilers: ^3.2.7
   json_serializable: ^6.1.5
 
 
@@ -103,3 +103,6 @@ flutter:
     - family: Teacher
       fonts:
       - asset: assets/fonts/Teacher.ttf
+
+  assets:
+    - assets/.env
