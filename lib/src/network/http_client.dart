@@ -22,9 +22,9 @@ class HttpClient {
               "Origin, X-Requested-With, Content-Type, Accept",
           "Content-Type": "application/json; charset=UTF-8"
         },
-        connectTimeout: 5000,
-        receiveTimeout: 5000,
-        sendTimeout: 5000,
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+        sendTimeout: const Duration(seconds: 5),
         validateStatus: (status) => status! < 500));
   }
 
