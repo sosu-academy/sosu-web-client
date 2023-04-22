@@ -18,12 +18,14 @@ class HttpClient {
     return Dio(BaseOptions(
         baseUrl: baseUrl,
         headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods":
-              "POST, GET, OPTIONS, PUT, DELETE, HEAD",
-          "Access-Control-Allow-Headers":
-              "Origin, X-Requested-With, Content-Type, Accept",
-          "Content-Type": "application/json; charset=UTF-8"
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Methods":
+          //     "POST, GET, OPTIONS, PUT, DELETE, HEAD",
+          // "Access-Control-Allow-Headers":
+          //     "Origin, X-Requested-With, Content-Type, Accept",
+          "Connection": "keep-alive",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Accept": "*/*"
         },
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 5),

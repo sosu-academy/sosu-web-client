@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 /// Description : 공통 디자인 시스템
@@ -64,5 +65,45 @@ class TvStyle {
     TextStyle style =
         TextStyle(color: color, fontWeight: fontWeight, fontSize: textSize);
     return Text(title, style: style);
+  }
+}
+
+typedef OnButtonClickListener<T> = void Function(T data);
+
+class CardStyle {
+  static Card c1(Text tvTitle, Text subTitle) {
+    return Card(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+      ListTile(
+        title: tvTitle,
+        subtitle: subTitle,
+      ),
+    ]));
+  }
+
+  static Card c1_img(Text tvTitle, Text subTitle, String imgUrl) {
+    return Card(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CachedNetworkImage(
+            imageUrl: imgUrl.trim(),
+            httpHeaders: const {
+              "Access-Control-Allow-Headers":
+                  "Origin, X-Requested-With, Content-Type, Accept",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods":
+                  "POST, GET, OPTIONS, PUT, DELETE, HEAD"
+            },
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+            fit: BoxFit.fitWidth,
+          ),
+          tvTitle,
+          subTitle
+        ],
+      ),
+    );
   }
 }

@@ -54,7 +54,7 @@ class _MainViewState extends State<MainView> {
   late List<Views> views = [];
 
   _MainViewState() {
-    initNavigationViews();
+    _initNavigationViews();
   }
 
   @override
@@ -102,15 +102,13 @@ class _MainViewState extends State<MainView> {
   ///
   /// 네비게이션바 초기화 처리함수
   ///
-  void initNavigationViews() {
+  void _initNavigationViews() {
     views.add(Views(SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
         MainDashBoardPage()));
     views.add(Views(SideNavigationBarItem(icon: Icons.person, label: "학생"),
         MainStudentPage()));
     views.add(Views(SideNavigationBarItem(icon: Teacher.teacher, label: "선생님"),
         MainTeacherPage()));
-    views.add(Views(SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
-        MainDashBoardPage()));
     views.add(Views(
         SideNavigationBarItem(icon: Icons.card_giftcard, label: "디자인 컴포넌트"),
         MainDesignSystemPage()));
