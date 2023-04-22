@@ -12,7 +12,7 @@ import 'package:sosu_web/src/ui/teacher/main_teacher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load();
+  await dotenv.load(fileName: "env");
   runApp(const MyApp());
 }
 
