@@ -11,6 +11,7 @@ import 'package:sosu_web/src/ui/table.dart';
 import 'package:sosu_web/src/ui/teacher/main_teacher.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   runApp(const MyApp());
 }

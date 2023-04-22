@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:sosu_web/src/utils/j_logger.dart';
 
@@ -9,10 +10,11 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     StringBuffer str = StringBuffer();
-    str.write(
-        '--> ${options.method} ${options.path} ${options.queryParameters}\n');
+    str.write('--> ${options.method} ${options.uri}\n');
     str.write('Headers: ${options.headers}\n');
-    str.write('Body: ${options.data}\n');
+    if (options.data != null) {
+      str.write('Body: ${options.data}');
+    }
     JLogger.d(str.toString());
     handler.next(options);
   }
