@@ -82,6 +82,10 @@ class CardStyle {
   }
 
   static Card c1_img(Text tvTitle, Text subTitle, String imgUrl) {
+    // 중간에 아래 에러가 발생하면서 이미지 로드를 하지 않음
+    // Failed to decode image using the browser's ImageDecoder API.
+    // Image source: https://node.qtzz.synology.me/resource/img/20230227/1677463363525o8e0voblm9g.jpg
+    // Original browser error: InvalidStateError: Failed to retrieve track metadata.
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
