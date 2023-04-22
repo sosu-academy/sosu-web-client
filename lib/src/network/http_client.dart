@@ -11,6 +11,9 @@ class HttpClient {
   late Dio _client;
 
   Dio initClient() {
+    // jenkins 에서 Environment 할때 아래 코드 사용할수 있을듯
+    // const String myEnv = String.fromEnvironment('TEST_ENV', defaultValue: 'undefined url!');
+    // print("TEST $myEnv");
     final String baseUrl = dotenv.env['BASE_URL']!;
     return Dio(BaseOptions(
         baseUrl: baseUrl,

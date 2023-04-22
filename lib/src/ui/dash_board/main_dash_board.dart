@@ -29,12 +29,7 @@ class MainDashBoardPage extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         } else {
           // 데이터를 가져오는 중일 때 처리
-          return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Center(child: Text("테스트를 위해 서버 딜레이 1초입니다.")),
-                Center(child: CircularProgressIndicator())
-              ]);
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

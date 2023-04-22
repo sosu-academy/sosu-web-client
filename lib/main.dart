@@ -7,6 +7,7 @@ import 'package:sosu_web/src/ui/dash_board/main_dash_board.dart';
 import 'package:sosu_web/src/ui/design_system/main_design_system.dart';
 import 'package:sosu_web/src/ui/settings/main_settings.dart';
 import 'package:sosu_web/src/ui/student/main_student.dart';
+import 'package:sosu_web/src/ui/style/design_system.dart';
 import 'package:sosu_web/src/ui/table.dart';
 import 'package:sosu_web/src/ui/teacher/main_teacher.dart';
 
@@ -49,28 +50,17 @@ class Views {
 }
 
 class _MainViewState extends State<MainView> {
-  List<Views> views = [
-    Views(const SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
-        const MainDashBoardPage()),
-    Views(const SideNavigationBarItem(icon: Icons.person, label: "학생"),
-        const MainStudentPage()),
-    Views(const SideNavigationBarItem(icon: Teacher.teacher, label: "선생님"),
-        const MainTeacherPage()),
-    Views(
-        const SideNavigationBarItem(
-            icon: Icons.card_giftcard, label: "디자인 컴포넌트"),
-        const MainDesignSystemPage()),
-    Views(const SideNavigationBarItem(icon: Icons.table_chart, label: "테이블"),
-        const MainTablePage()),
-    Views(const SideNavigationBarItem(icon: Icons.settings, label: "셋팅"),
-        const MainSettingsPage()),
-  ];
-
   int selectedIndex = 0; // 현재 선택한 네비게이션 위치값
+  late List<Views> views = [];
+
+  _MainViewState() {
+    initNavigationViews();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(),
       body: Row(
         children: [
           // MainSideNavigation(
@@ -92,22 +82,44 @@ class _MainViewState extends State<MainView> {
                   expandIcon: Icons.keyboard_arrow_left,
                   shrinkIcon: Icons.keyboard_arrow_right,
                   onToggle: () {}),
-              header: const SideNavigationBarHeader(
-                  image: CircleAvatar(child: Icon(Icons.school)),
-                  title: Text("SOSU Academy",
-                      style: TextStyle(fontSize: 22),
-                      textAlign: TextAlign.left),
-                  subtitle: Text("Hello")),
-              footer: const SideNavigationBarFooter(
-                  label: Text("DesignBy sieunju")),
+              header: SideNavigationBarHeader(
+                  image: const CircleAvatar(child: Icon(Icons.school)),
+                  title: TvStyle.t3_B(title: "SOSU Academy"),
+                  subtitle: TvStyle.t3(title: "Hello")),
+              footer: SideNavigationBarFooter(
+                  label: TvStyle.t5(title: "DesignBy sieunju")),
               initiallyExpanded: false),
           Expanded(
-            child: views.elementAt(selectedIndex).page,
+            child: views
+                .elementAt(selectedIndex)
+                .page,
           )
         ],
       ),
     );
   }
+
+  ///
+  /// 네비게이션바 초기화 처리함수
+  ///
+  void initNavigationViews() {
+    views.add(Views(SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
+        MainDashBoardPage()));
+    views.add(Views(SideNavigationBarItem(icon: Icons.person, label: "학생"),
+        MainStudentPage()));
+    views.add(Views(SideNavigationBarItem(icon: Teacher.teacher, label: "선생님"),
+        MainTeacherPage()));
+    views.add(Views(SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
+        MainDashBoardPage()));
+    views.add(Views(
+        SideNavigationBarItem(icon: Icons.card_giftcard, label: "디자인 컴포넌트"),
+        MainDesignSystemPage()));
+    views.add(Views(
+        SideNavigationBarItem(icon: Icons.table_chart, label: "테이블"),
+        MainTablePage()));
+    views.add(Views(SideNavigationBarItem(icon: Icons.settings, label: "셋팅"),
+        MainSettingsPage()));
+    }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -182,7 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headlineMedium,
             ),
           ],
         ),
