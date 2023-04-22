@@ -133,5 +133,6 @@ app.*.symbols
 !.vscode/settings.json
 
 node_modules/
-assets/.env
+assets/env
 .env
+env

@@ -105,4 +105,4 @@ flutter:
       - asset: assets/fonts/Teacher.ttf
 
   assets:
-    - assets/.env
+    - assets/env
