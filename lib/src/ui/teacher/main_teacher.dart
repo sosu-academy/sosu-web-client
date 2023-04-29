@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 /// Created by juhongmin on 2023/04/19
 class MainTeacherPage extends StatelessWidget {
 
-  const MainTeacherPage({super.key});
+  MainTeacherPage({super.key});
 
   @override
   Widget build(BuildContext context) {

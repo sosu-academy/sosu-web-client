@@ -19,18 +19,17 @@ class GoodsEntity {
   String message;
 
   @JsonKey(name: "imagePath")
-  String imagePath;
+  String imageUrl;
 
   GoodsEntity(
       {required this.uid,
       required this.title,
       required this.message,
-      required this.imagePath});
+      required this.imageUrl});
 
   factory GoodsEntity.fromJson(Map<String, dynamic> json) {
     return _$GoodsEntityFromJson(json);
   }
-
 
   Map<String, dynamic> toJson() => _$GoodsEntityToJson(this);
 }

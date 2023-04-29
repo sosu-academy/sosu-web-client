@@ -10,7 +10,7 @@ GoodsEntity _$GoodsEntityFromJson(Map<String, dynamic> json) => GoodsEntity(
       uid: json['id'] as int,
       title: json['title'] as String,
       message: json['message'] as String,
-      imagePath: json['imagePath'] as String,
+      imageUrl: json['imagePath'] as String,
     );
 
 Map<String, dynamic> _$GoodsEntityToJson(GoodsEntity instance) =>
@@ -18,5 +18,5 @@ Map<String, dynamic> _$GoodsEntityToJson(GoodsEntity instance) =>
       'id': instance.uid,
       'title': instance.title,
       'message': instance.message,
-      'imagePath': instance.imagePath,
+      'imagePath': instance.imageUrl,
     };
