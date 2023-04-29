@@ -11,16 +11,21 @@ class HttpClient {
   late Dio _client;
 
   Dio initClient() {
+    // jenkins 에서 Environment 할때 아래 코드 사용할수 있을듯
+    // const String myEnv = String.fromEnvironment('TEST_ENV', defaultValue: 'undefined url!');
+    // print("TEST $myEnv");
     final String baseUrl = dotenv.env['BASE_URL']!;
     return Dio(BaseOptions(
         baseUrl: baseUrl,
         headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods":
-              "POST, GET, OPTIONS, PUT, DELETE, HEAD",
-          "Access-Control-Allow-Headers":
-              "Origin, X-Requested-With, Content-Type, Accept",
-          "Content-Type": "application/json; charset=UTF-8"
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Methods":
+          //     "POST, GET, OPTIONS, PUT, DELETE, HEAD",
+          // "Access-Control-Allow-Headers":
+          //     "Origin, X-Requested-With, Content-Type, Accept",
+          "Connection": "keep-alive",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Accept": "*/*"
         },
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 5),
