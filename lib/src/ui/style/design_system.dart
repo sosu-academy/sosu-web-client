@@ -62,9 +62,16 @@ class TvStyle {
 
   static Text _initText(
       String title, Color color, double textSize, FontWeight fontWeight) {
-    TextStyle style =
-        TextStyle(color: color, fontWeight: fontWeight, fontSize: textSize);
-    return Text(title, style: style);
+    TextStyle style = TextStyle(
+        color: color,
+        fontWeight: fontWeight,
+        fontSize: textSize
+    );
+    return Text(
+        title,
+        style: style,
+        textAlign: TextAlign.left
+    );
   }
 }
 

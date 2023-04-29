@@ -31,7 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
   logger: ^1.3.0 # Logging
-  side_navigation: ^1.0.4 # Visual
   analyzer_plugin: ^0.11.2 # Grammar? :)
   json_annotation: ^4.8.0 # json_serializable
   dio: ^5.1.1 # Network Lib

@@ -1,15 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:side_navigation/side_navigation.dart';
-import 'package:sosu_web/src/icons/teacher_icon.dart';
+import 'package:sosu_web/src/icons/custom_icons.dart';
 import 'package:sosu_web/src/network/http_client.dart';
+import 'package:sosu_web/src/ui/attendance/main_attendance.dart';
+import 'package:sosu_web/src/ui/counseling/main_counseling_journal.dart';
 import 'package:sosu_web/src/ui/dash_board/main_dash_board.dart';
-import 'package:sosu_web/src/ui/design_system/main_design_system.dart';
-import 'package:sosu_web/src/ui/settings/main_settings.dart';
 import 'package:sosu_web/src/ui/student/main_student.dart';
 import 'package:sosu_web/src/ui/style/design_system.dart';
-import 'package:sosu_web/src/ui/table.dart';
 import 'package:sosu_web/src/ui/teacher/main_teacher.dart';
+import 'package:sosu_web/strings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SOSU Web',
+      title: Strings.APP_NAME,
       theme: ThemeData(
         secondaryHeaderColor: Colors.amber,
         primaryColor: Colors.blueAccent,
@@ -42,82 +42,225 @@ class MainView extends StatefulWidget {
   _MainViewState createState() => _MainViewState();
 }
 
-class Views {
-  final SideNavigationBarItem navigation;
-  final Widget page;
-
-  Views(this.navigation, this.page);
-}
-
 class _MainViewState extends State<MainView> {
-  int selectedIndex = 0; // 현재 선택한 네비게이션 위치값
-  late List<Views> views = [];
+  String _selectedPageKey = Strings.MAIN;
+  late final List<Widget> _menus = [];
+  late final Map<String, Widget> _pageMap = {};
 
   _MainViewState() {
-    _initNavigationViews();
+    _initView();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(),
-      body: Row(
-        children: [
-          // MainSideNavigation(
-          // selectedIndex: selectedIndex,
-          // onTap: (index) {
-          //   setState(() {
-          //     selectedIndex = index;
-          //   });
-          // }),
-          SideNavigationBar(
-              selectedIndex: selectedIndex,
-              items: views.map((e) => e.navigation).toList(),
-              onTap: (index) {
-                setState(() {
-                  selectedIndex = index;
-                });
-              },
-              toggler: SideBarToggler(
-                  expandIcon: Icons.keyboard_arrow_left,
-                  shrinkIcon: Icons.keyboard_arrow_right,
-                  onToggle: () {}),
-              header: SideNavigationBarHeader(
-                  image: const CircleAvatar(child: Icon(Icons.school)),
-                  title: TvStyle.t3_B(title: "SOSU Academy"),
-                  subtitle: TvStyle.t3(title: "Hello")),
-              footer: SideNavigationBarFooter(
-                  label: TvStyle.t5(title: "DesignBy sieunju")),
-              initiallyExpanded: false),
-          Expanded(
-            child: views
-                .elementAt(selectedIndex)
-                .page,
-          )
-        ],
+      appBar: AppBar(
+          title: TvStyle.t2(title: _selectedPageKey, color: Colors.white)),
+      body: _pageMap[_selectedPageKey],
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: _menus,
+        ),
       ),
     );
   }
 
   ///
-  /// 네비게이션바 초기화 처리함수
+  /// 네비게이션 메뉴 생성 처리 함수
+  /// 1. 학생정보 (버튼 클릭 X)
+  ///   - 목록
+  ///   - 수납
+  /// 2. 출석부
+  /// 3. 선생님 (버튼 클릭 X)
+  ///   - 목록
+  ///   - 시간표
+  /// 4. 상담 일지 및 메모
+  ///   - 상담 일지
+  ///   - 메모
   ///
-  void _initNavigationViews() {
-    views.add(Views(SideNavigationBarItem(icon: Icons.dashboard, label: "대쉬보드"),
-        MainDashBoardPage()));
-    views.add(Views(SideNavigationBarItem(icon: Icons.person, label: "학생"),
-        MainStudentPage()));
-    views.add(Views(SideNavigationBarItem(icon: Teacher.teacher, label: "선생님"),
-        MainTeacherPage()));
-    views.add(Views(
-        SideNavigationBarItem(icon: Icons.card_giftcard, label: "디자인 컴포넌트"),
-        MainDesignSystemPage()));
-    views.add(Views(
-        SideNavigationBarItem(icon: Icons.table_chart, label: "테이블"),
-        MainTablePage()));
-    views.add(Views(SideNavigationBarItem(icon: Icons.settings, label: "셋팅"),
-        MainSettingsPage()));
-    }
+  void _initView() {
+    _menus.add(DrawerHeader(
+        decoration: BoxDecoration(color: Colors.blue),
+        child: InkWell(
+          child: Card(
+            elevation: 6,
+            margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                    radius: 25,
+                    backgroundImage: CachedNetworkImageProvider(
+                        Strings.LOGO_URI,
+                        maxWidth: 25,
+                        maxHeight: 25)),
+                TvStyle.t1_B(title: Strings.APP_NAME)
+              ],
+            ),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+            _setPage(Strings.MAIN);
+          },
+        )));
+    _pageMap[Strings.MAIN] = const MainDashBoardPage();
+    _initStudentMenu(_menus, _pageMap);
+    _initAttendanceMenu(_menus, _pageMap);
+    _initTeacherMenu(_menus, _pageMap);
+    _initMemoMenu(_menus, _pageMap);
+  }
+
+  /// 페이징 변경 처리 함수
+  /// [key] 페이지 맵에 구성된 키
+  void _setPage(String key) {
+    setState(() {
+      _selectedPageKey = key;
+    });
+  }
+
+  /// 학생 정보 메뉴 및 페이지 초기화 함수
+  /// [menus] 네비게이션 메뉴 리스트
+  /// [pageMap] 메인 페이지 맵
+  void _initStudentMenu(List<Widget> menus, Map<String, Widget> pageMap) {
+    String listKey = "${Strings.MENU_STUDENT}_${Strings.MENU_STUDENT_LIST}";
+    String recipientKey =
+        "${Strings.MENU_STUDENT}_${Strings.MENU_STUDENT_RECIPIENCE}";
+
+    menus.add(ExpansionTile(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(JICons.teacher),
+          const SizedBox(width: 16),
+          TvStyle.t3(title: Strings.MENU_STUDENT)
+        ],
+      ),
+      initiallyExpanded: true,
+      children: [
+        ListTile(
+          title: TvStyle.t4(title: Strings.MENU_STUDENT_LIST),
+          onTap: () {
+            // 학생정보 목록 페이지 이동
+            Navigator.pop(context);
+            _setPage(listKey);
+          },
+        ),
+        ListTile(
+          title: TvStyle.t4(title: Strings.MENU_STUDENT_RECIPIENCE),
+          onTap: () {
+            // 수납 (이전 수납기록, 오늘 수납기록
+            Navigator.pop(context);
+            _setPage(recipientKey);
+          },
+        )
+      ],
+    ));
+    // 페이지 구성
+    pageMap[listKey] = const MainStudentPage();
+    pageMap[recipientKey] = const MainStudentPage();
+  }
+
+  /// 출석부 메뉴 초기화 함수
+  /// [menus] 네비게이션 메뉴 리스트
+  /// [pageMap] 메인 페이지 맵
+  void _initAttendanceMenu(List<Widget> menus, Map<String, Widget> pageMap) {
+    menus.add(ListTile(
+      leading: Icon(
+        Icons.abc_rounded,
+        color: Colors.blue,
+      ),
+      title: TvStyle.t3(title: Strings.MENU_ATTENDANCE),
+      onTap: () {
+        // 출석부 페이지로 이동
+        Navigator.pop(context);
+        _setPage(Strings.MENU_ATTENDANCE);
+      },
+    ));
+    pageMap[Strings.MENU_ATTENDANCE] = MainAttendancePage();
+  }
+
+  /// 선생님 메뉴 초기화
+  /// [menus] 네비게이션 메뉴 리스트
+  /// [pageMap] 메인 페이지 맵
+  void _initTeacherMenu(List<Widget> menus, Map<String, Widget> pageMap) {
+    String listKey = "${Strings.MENU_TEACHER}_${Strings.MENU_TEACHER_LIST}";
+    String timeTableKey =
+        "${Strings.MENU_TEACHER}_${Strings.MENU_TEACHER_TIME_TABLE}";
+    menus.add(ExpansionTile(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.school),
+          const SizedBox(width: 16),
+          TvStyle.t3(title: Strings.MENU_TEACHER)
+        ],
+      ),
+      initiallyExpanded: true,
+      children: [
+        ListTile(
+          title: TvStyle.t4(title: Strings.MENU_TEACHER_LIST),
+          onTap: () {
+            // 목록 (상세 페이지)
+            Navigator.pop(context);
+            _setPage(listKey);
+          },
+        ),
+        ListTile(
+          title: TvStyle.t4(title: Strings.MENU_TEACHER_TIME_TABLE),
+          onTap: () {
+            // 시간표 (이번달 전체 선생님 시간표,
+            // BottomSheetDialog 로 선생님들 선택해서 해당 시간표 볼수 있도록), 시간표 다운로드
+            Navigator.pop(context);
+            _setPage(timeTableKey);
+          },
+        )
+      ],
+    ));
+    pageMap[listKey] = MainTeacherPage(); // 선생님 목록 페이지
+    pageMap[timeTableKey] = MainTeacherPage(); // 페이지 추가 예정
+  }
+
+  /// 상담일지 및 메모 메뉴
+  /// [menus] 네비게이션 메뉴 리스트
+  /// [pageMap] 메인 페이지 맵
+  void _initMemoMenu(List<Widget> menus, Map<String, Widget> pageMap) {
+    menus.add(ExpansionTile(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.school),
+          const SizedBox(width: 16),
+          TvStyle.t3(title: Strings.MENU_CJ_AND_M)
+        ],
+      ),
+      initiallyExpanded: true,
+      children: [
+        ListTile(
+          title: TvStyle.t4(title: Strings.MENU_CJ_AND_M_COUNSLING),
+          onTap: () {
+            // 목록 (상세 페이지)
+            Navigator.pop(context);
+            _setPage(Strings.MENU_CJ_AND_M_COUNSLING);
+          },
+        ),
+        ListTile(
+          title: TvStyle.t4(title: Strings.MENU_CJ_AND_M_MEMO),
+          onTap: () {
+            Navigator.pop(context);
+            _setPage(Strings.MENU_CJ_AND_M_MEMO);
+          },
+        )
+      ],
+    ));
+    pageMap[Strings.MENU_CJ_AND_M_COUNSLING] = MainConsultationPage();
+    pageMap[Strings.MENU_CJ_AND_M_MEMO] = MainMemoPage();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -192,10 +335,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineMedium,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),

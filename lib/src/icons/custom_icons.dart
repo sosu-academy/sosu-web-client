@@ -19,8 +19,8 @@
 ///
 import 'package:flutter/widgets.dart';
 
-class Teacher {
-  Teacher._();
+class JICons {
+  JICons._();
 
   static const _kFontFam = 'Teacher';
 
