@@ -62,16 +62,9 @@ class TvStyle {
 
   static Text _initText(
       String title, Color color, double textSize, FontWeight fontWeight) {
-    TextStyle style = TextStyle(
-        color: color,
-        fontWeight: fontWeight,
-        fontSize: textSize
-    );
-    return Text(
-        title,
-        style: style,
-        textAlign: TextAlign.left
-    );
+    TextStyle style =
+        TextStyle(color: color, fontWeight: fontWeight, fontSize: textSize);
+    return Text(title, style: style, textAlign: TextAlign.left);
   }
 }
 
@@ -114,6 +107,35 @@ class CardStyle {
           tvTitle,
           subTitle
         ],
+      ),
+    );
+  }
+
+  /// Icon + Text Button Style
+  /// [icon] 왼쪽 아이콘을 넣을 아이콘 데이터
+  /// [title] 텍스트 문구
+  /// [onClick] 클릭 이벤트 리스너
+  static Widget iconTextButton(
+      IconData icon, String title, VoidCallback onClick) {
+    return InkWell(
+      onTap: onClick,
+      child: Card(
+        color: Colors.blue,
+        elevation: 6,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4.0))),
+        margin: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: Colors.white,),
+              const SizedBox(width: 5),
+              TvStyle.t2(title: title,color: Colors.white),
+            ],
+          ),
+        ),
       ),
     );
   }
