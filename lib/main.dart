@@ -171,7 +171,7 @@ class _MainViewState extends State<MainView> {
   /// [pageMap] 메인 페이지 맵
   void _initAttendanceMenu(List<Widget> menus, Map<String, Widget> pageMap) {
     menus.add(ListTile(
-      leading: Icon(
+      leading: const Icon(
         Icons.abc_rounded,
         color: Colors.blue,
       ),

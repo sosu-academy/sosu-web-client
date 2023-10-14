@@ -23,4 +23,5 @@ class Strings {
   static const MENU_CJ_AND_M = "상담일지 및 메모";
   static const MENU_CJ_AND_M_COUNSLING = "상담 일지";
   static const MENU_CJ_AND_M_MEMO = "메모";
+  static const WIDGET = "UI Widget";
 }

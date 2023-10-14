@@ -12,30 +12,45 @@ class MainDashBoardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: HttpClient().fetchGoods(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        // 데이터를 정상적으로 가져왔을 때 처리
-        if (snapshot.hasData) {
-          ApiResponse<PayloadList<GoodsEntity>> response = snapshot.data;
-          List<GoodsEntity> list = response.data?.list ?? [];
-          return ListView.builder(
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                final item = list[index];
-                return CardStyle.c1_img(TvStyle.t2_B(title: item.title),
-                    TvStyle.t4(title: item.message), item.imageUrl);
-                return ListTile(
-                    title: Text("${list[index].title}_${list[index].message}"));
-              });
-        } else if (snapshot.hasError) {
-          // 오류 발생 시 처리
-          return Text('Error: ${snapshot.error}');
-        } else {
-          // 데이터를 가져오는 중일 때 처리
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
+    return Scaffold(
+      body: Column(
+        key: const Key("MainSettingsPage"),
+        children: const [
+          Center(child: Text("셋팅 화면입니다.")),
+          Center(child: Text("대쉬보드 화면입니다.")),
+          Center(child: Text("대쉬보드 화면입니다."))
+        ],
+      ),
     );
   }
+
+// TEST
+  // @override
+  // Widget build(BuildContext context) {
+  //   return FutureBuilder(
+  //     future: HttpClient().fetchGoods(),
+  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+  //       // 데이터를 정상적으로 가져왔을 때 처리
+  //       if (snapshot.hasData) {
+  //         ApiResponse<PayloadList<GoodsEntity>> response = snapshot.data;
+  //         List<GoodsEntity> list = response.data?.list ?? [];
+  //         return ListView.builder(
+  //             itemCount: list.length,
+  //             itemBuilder: (context, index) {
+  //               final item = list[index];
+  //               return CardStyle.c1_img(TvStyle.t2_B(title: item.title),
+  //                   TvStyle.t4(title: item.message), item.imageUrl);
+  //               return ListTile(
+  //                   title: Text("${list[index].title}_${list[index].message}"));
+  //             });
+  //       } else if (snapshot.hasError) {
+  //         // 오류 발생 시 처리
+  //         return Text('Error: ${snapshot.error}');
+  //       } else {
+  //         // 데이터를 가져오는 중일 때 처리
+  //         return const Center(child: CircularProgressIndicator());
+  //       }
+  //     },
+  //   );
+  // }
 }
