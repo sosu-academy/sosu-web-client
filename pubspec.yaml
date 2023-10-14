@@ -99,10 +99,11 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
+  # 선생님 아이콘
   fonts:
     - family: Teacher
       fonts:
-      - asset: assets/fonts/Teacher.ttf
+        - asset: assets/fonts/Teacher.ttf
 
   assets:
     - assets/env
