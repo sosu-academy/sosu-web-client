@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:sosu_web/src/models/base_response.dart';
 import 'package:sosu_web/src/models/goods_entity.dart';
+import 'package:sosu_web/src/network/apis.dart';
 import 'package:sosu_web/src/network/http_client.dart';
 import 'package:sosu_web/src/ui/style/design_system.dart';
+import 'package:sosu_web/src/utils/j_logger.dart';
 
 /// Description : 메인 > 데쉬보드 화면
 ///
@@ -14,43 +18,87 @@ class MainDashBoardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        key: const Key("MainSettingsPage"),
-        children: const [
-          Center(child: Text("셋팅 화면입니다.")),
-          Center(child: Text("대쉬보드 화면입니다.")),
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          initChildrenDashboard(),
+          initTest(),
+          CardStyle.c1(TvStyle.t2(title: "3/29 수납예정 학생", color: Colors.blue),
+              TvStyle.t4(title: "4명")),
           Center(child: Text("대쉬보드 화면입니다."))
         ],
       ),
     );
   }
 
+  Widget initChildrenDashboard() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+            child: CardStyle.c1(
+                TvStyle.t2(title: "3/29 수납예정 학생", color: Colors.blue),
+                TvStyle.t4(title: "4명"))),
+        Flexible(
+            child: CardStyle.c1(
+                TvStyle.t2(title: "현재 수강료 체납 학생", color: Colors.blue),
+                TvStyle.t4(title: "2명"))),
+        Flexible(
+            child: CardStyle.c1(
+                TvStyle.t2(title: "3월 신규생 수", color: Colors.blue),
+                TvStyle.t4(title: "3명")))
+      ],
+    );
+  }
+
+  Widget initTest() {
+    return FutureBuilder(
+        future: APIs.fetchGoods(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // 데이터를 정상적으로 가져왔을 때 처리
+          if (snapshot.hasData) {
+            ApiRes res = snapshot.data;
+            if (res is Success<PayloadList<GoodsEntity>>) {
+              return TvStyle.t4(title: res.getPayload().list[0].message);
+            } else {
+              return TvStyle.t4(title: "ERROR");
+            }
+          } else if (snapshot.hasError) {
+            return TvStyle.t4(title: "ERROR ${snapshot.error}");
+          } else {
+            // 대기중일때
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
+  }
+
 // TEST
-  // @override
-  // Widget build(BuildContext context) {
-  //   return FutureBuilder(
-  //     future: HttpClient().fetchGoods(),
-  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-  //       // 데이터를 정상적으로 가져왔을 때 처리
-  //       if (snapshot.hasData) {
-  //         ApiResponse<PayloadList<GoodsEntity>> response = snapshot.data;
-  //         List<GoodsEntity> list = response.data?.list ?? [];
-  //         return ListView.builder(
-  //             itemCount: list.length,
-  //             itemBuilder: (context, index) {
-  //               final item = list[index];
-  //               return CardStyle.c1_img(TvStyle.t2_B(title: item.title),
-  //                   TvStyle.t4(title: item.message), item.imageUrl);
-  //               return ListTile(
-  //                   title: Text("${list[index].title}_${list[index].message}"));
-  //             });
-  //       } else if (snapshot.hasError) {
-  //         // 오류 발생 시 처리
-  //         return Text('Error: ${snapshot.error}');
-  //       } else {
-  //         // 데이터를 가져오는 중일 때 처리
-  //         return const Center(child: CircularProgressIndicator());
-  //       }
-  //     },
-  //   );
-  // }
+// @override
+// Widget build(BuildContext context) {
+//   return FutureBuilder(
+//     future: HttpClient().fetchGoods(),
+//     builder: (BuildContext context, AsyncSnapshot snapshot) {
+//       // 데이터를 정상적으로 가져왔을 때 처리
+//       if (snapshot.hasData) {
+//         ApiResponse<PayloadList<GoodsEntity>> response = snapshot.data;
+//         List<GoodsEntity> list = response.data?.list ?? [];
+//         return ListView.builder(
+//             itemCount: list.length,
+//             itemBuilder: (context, index) {
+//               final item = list[index];
+//               return CardStyle.c1_img(TvStyle.t2_B(title: item.title),
+//                   TvStyle.t4(title: item.message), item.imageUrl);
+//               return ListTile(
+//                   title: Text("${list[index].title}_${list[index].message}"));
+//             });
+//       } else if (snapshot.hasError) {
+//         // 오류 발생 시 처리
+//         return Text('Error: ${snapshot.error}');
+//       } else {
+//         // 데이터를 가져오는 중일 때 처리
+//         return const Center(child: CircularProgressIndicator());
+//       }
+//     },
+//   );
+// }
 }

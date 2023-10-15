@@ -36,7 +36,6 @@ class ApiErrorException implements Exception {
 ///   },
 ///   message: String
 /// }
-///
 
 @JsonSerializable(genericArgumentFactories: true)
 class PayloadObject<T> {
@@ -78,4 +77,54 @@ class ApiResponse<T> {
       message: json['status'] == false ? json['message'] as String : null,
     );
   }
+}
+
+@JsonSerializable(genericArgumentFactories: true)
+class JSendResponseEntity<T> {
+  final T data;
+  final String? message;
+
+  JSendResponseEntity({required this.data, required this.message});
+
+  factory JSendResponseEntity.fromJson(
+      Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
+    T data = fromJsonT(json["data"]);
+    String? msg;
+    if (json.containsKey("message")) {
+      msg = json["message"] as String;
+    }
+    return JSendResponseEntity(data: data, message: msg);
+  }
+}
+
+abstract class ApiRes {}
+
+class Success<T> extends ApiRes {
+  final dynamic _json;
+
+  JSendResponseEntity<T>? _res;
+
+  Success(this._json);
+
+  void handleJsonMapping(T Function(dynamic) fromJsonT) {
+    _res = JSendResponseEntity.fromJson(_json, fromJsonT);
+  }
+
+  T getPayload() {
+    return _res!.data;
+  }
+}
+
+/// HTTP 통신 에러 Error Body를 리턴합니다.
+class HttpError<T> extends ApiRes {
+  final T? data;
+
+  HttpError({this.data});
+}
+
+/// HTTP Exception 이 아닌 다른 에러
+class Error extends ApiRes {
+  final String? message;
+
+  Error({this.message});
 }

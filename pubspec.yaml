@@ -36,6 +36,7 @@ dependencies:
   dio: ^5.1.1 # Network Lib
   flutter_dotenv: ^5.0.0 # Environment
   cached_network_image: ^3.2.3 # Image Loader
+  table_calendar: ^3.0.9 # 캘린더
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

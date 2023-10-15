@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sosu_web/src/models/base_response.dart';
+import 'package:sosu_web/src/utils/j_logger.dart';
 
-import '../models/goods_entity.dart';
 import 'http_interceptor.dart';
 
 class HttpClient {
   late Dio _client;
 
-  Dio initClient() {
+  Dio _initClient() {
     // jenkins 에서 Environment 할때 아래 코드 사용할수 있을듯
     // const String myEnv = String.fromEnvironment('TEST_ENV', defaultValue: 'undefined url!');
     // print("TEST $myEnv");
@@ -34,9 +34,9 @@ class HttpClient {
   }
 
   HttpClient._privateConstructor() {
-    _client = initClient();
-    _client.interceptors
-        .addAll([TokenInterceptor("Token Test"), LoggingInterceptor()]);
+    _client = _initClient();
+    _client.interceptors.add(TokenInterceptor("Token Test"));
+    // _client.interceptors.add(LoggingInterceptor());
   }
 
   static final HttpClient _instance = HttpClient._privateConstructor();
@@ -45,28 +45,51 @@ class HttpClient {
     return _instance;
   }
 
-  Future<ApiResponse<PayloadList<GoodsEntity>>> fetchGoods() async {
-    final Response res = await _client.get("/api/til/goods",
-        queryParameters: {"pageNo": "1", "pageSize": "200"});
-    await Future.delayed(const Duration(seconds: 1));
-    if (res.statusCode == 200) {
+  ApiRes _handleApiRes<T>(Response res) {
+    int statusCode = (res.statusCode != null) ? res.statusCode! : -1;
+    if (statusCode >= 200 && statusCode <= 299) {
       try {
-        return ApiResponse<PayloadList<GoodsEntity>>.fromJson(res.data,
-            (dataJson) {
-          return PayloadList.fromJson(dataJson, (payloadJson) {
-            return GoodsEntity.fromJson(payloadJson);
-          });
-        });
-        // 아래 방식이 좀더 코드가 줄어보일수 있지만 나는 좀더 위에 방향인 명확하게 하는걸로 선택
-        // return ApiResponse<PayloadList<GoodsEntity>>.fromJson(
-        //     json,
-        //     (json) => PayloadList.fromJson(
-        //         json, (json) => GoodsEntity.fromJson(json)));
+        return Success<T>(res.data ?? {});
       } catch (err) {
-        rethrow;
+        if (err is Exception) {
+          return Error(message: err.toString());
+        } else {
+          return Error();
+        }
       }
     } else {
-      throw ApiErrorException("ApiError");
+      return HttpError(data: res.data);
     }
   }
+
+  Future<ApiRes> get<T>(String path, Map<String, String>? queryParameters) async {
+    final Response res =
+        await _client.get(path, queryParameters: queryParameters);
+    return _handleApiRes<T>(res);
+  }
+
+// Future<ApiResponse<PayloadList<GoodsEntity>>> fetchGoods() async {
+//   final Response res = await _client.get("/api/til/goods",
+//       queryParameters: {"pageNo": "1", "pageSize": "200"});
+//   await Future.delayed(const Duration(seconds: 1));
+//   if (res.statusCode == 200) {
+//     try {
+//       return ApiResponse<PayloadList<GoodsEntity>>.fromJson(res.data,
+//               (dataJson) {
+//             return PayloadList.fromJson(dataJson, (payloadJson) {
+//               return GoodsEntity.fromJson(payloadJson);
+//             });
+//           });
+//       // 아래 방식이 좀더 코드가 줄어보일수 있지만 나는 좀더 위에 방향인 명확하게 하는걸로 선택
+//       // return ApiResponse<PayloadList<GoodsEntity>>.fromJson(
+//       //     json,
+//       //     (json) => PayloadList.fromJson(
+//       //         json, (json) => GoodsEntity.fromJson(json)));
+//     } catch (err) {
+//       rethrow;
+//     }
+//   } else {
+//     throw ApiErrorException("ApiError");
+//   }
+// }
 }
