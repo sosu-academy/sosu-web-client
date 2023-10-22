@@ -38,23 +38,34 @@ class ApiErrorException implements Exception {
 /// }
 
 @JsonSerializable(genericArgumentFactories: true)
-class PayloadObject<T> {
+class PayloadObject<T, M> {
   @JsonKey(name: "payload")
   T obj;
+  @JsonKey(name: "meta")
+  M? meta;
 
-  PayloadObject({required this.obj});
+  PayloadObject({required this.obj, this.meta});
 }
 
 @JsonSerializable(genericArgumentFactories: true)
-class PayloadList<T> {
+class PayloadList<T,M> {
   @JsonKey(name: "payload")
   List<T> list;
+  @JsonKey(name: "meta")
+  M? meta;
 
-  PayloadList({required this.list});
+  PayloadList({required this.list,this.meta});
+
+  // factory PayloadList.fromJson(
+  //     Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
+  //   return _$PayloadListFromJson(json, fromJsonT);
+  // }
 
   factory PayloadList.fromJson(
-      Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
-    return _$PayloadListFromJson(json, fromJsonT);
+      Map<String,dynamic> json,
+      T Function(Object? json) fromJsonT,
+      M Function(Object? json) fromJsonM) {
+    return _$PayloadListFromJson(json, fromJsonT,fromJsonM);
   }
 
   Map<String, dynamic> toJson(T Function(dynamic) fromJsonT) =>

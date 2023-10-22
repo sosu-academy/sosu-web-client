@@ -15,6 +15,7 @@ class APIs {
   /// Test API 정적 함수로 하는게 맞는지 잘 모르겠따..
   /// 일단 이렇게 한번 구성해봄
   static Future<ApiRes> fetchGoods() async {
+
     final ApiRes res = await _client
         .get<PayloadList<GoodsEntity>>(
             "/api/til/goods", {"pageNo": "1", "pageSize": "5"});

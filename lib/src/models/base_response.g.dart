@@ -6,36 +6,56 @@ part of 'base_response.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PayloadObject<T> _$PayloadObjectFromJson<T>(
+PayloadObject<T, M> _$PayloadObjectFromJson<T, M>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
+  M Function(Object? json) fromJsonM,
 ) =>
-    PayloadObject<T>(
+    PayloadObject<T, M>(
       obj: fromJsonT(json['payload']),
+      meta: _$nullableGenericFromJson(json['meta'], fromJsonM),
     );
 
-Map<String, dynamic> _$PayloadObjectToJson<T>(
-  PayloadObject<T> instance,
+Map<String, dynamic> _$PayloadObjectToJson<T, M>(
+  PayloadObject<T, M> instance,
   Object? Function(T value) toJsonT,
+  Object? Function(M value) toJsonM,
 ) =>
     <String, dynamic>{
       'payload': toJsonT(instance.obj),
+      'meta': _$nullableGenericToJson(instance.meta, toJsonM),
     };
 
-PayloadList<T> _$PayloadListFromJson<T>(
+T? _$nullableGenericFromJson<T>(
+  Object? input,
+  T Function(Object? json) fromJson,
+) =>
+    input == null ? null : fromJson(input);
+
+Object? _$nullableGenericToJson<T>(
+  T? input,
+  Object? Function(T value) toJson,
+) =>
+    input == null ? null : toJson(input);
+
+PayloadList<T, M> _$PayloadListFromJson<T, M>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
+  M Function(Object? json) fromJsonM,
 ) =>
-    PayloadList<T>(
+    PayloadList<T, M>(
       list: (json['payload'] as List<dynamic>).map(fromJsonT).toList(),
+      meta: _$nullableGenericFromJson(json['meta'], fromJsonM),
     );
 
-Map<String, dynamic> _$PayloadListToJson<T>(
-  PayloadList<T> instance,
+Map<String, dynamic> _$PayloadListToJson<T, M>(
+  PayloadList<T, M> instance,
   Object? Function(T value) toJsonT,
+  Object? Function(M value) toJsonM,
 ) =>
     <String, dynamic>{
       'payload': instance.list.map(toJsonT).toList(),
+      'meta': _$nullableGenericToJson(instance.meta, toJsonM),
     };
 
 ApiResponse<T> _$ApiResponseFromJson<T>(
@@ -58,14 +78,20 @@ Map<String, dynamic> _$ApiResponseToJson<T>(
       'message': instance.message,
     };
 
-T? _$nullableGenericFromJson<T>(
-  Object? input,
-  T Function(Object? json) fromJson,
+JSendResponseEntity<T> _$JSendResponseEntityFromJson<T>(
+  Map<String, dynamic> json,
+  T Function(Object? json) fromJsonT,
 ) =>
-    input == null ? null : fromJson(input);
+    JSendResponseEntity<T>(
+      data: fromJsonT(json['data']),
+      message: json['message'] as String?,
+    );
 
-Object? _$nullableGenericToJson<T>(
-  T? input,
-  Object? Function(T value) toJson,
+Map<String, dynamic> _$JSendResponseEntityToJson<T>(
+  JSendResponseEntity<T> instance,
+  Object? Function(T value) toJsonT,
 ) =>
-    input == null ? null : toJson(input);
+    <String, dynamic>{
+      'data': toJsonT(instance.data),
+      'message': instance.message,
+    };
