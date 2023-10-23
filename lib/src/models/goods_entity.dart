@@ -35,7 +35,7 @@ class GoodsEntity {
 }
 
 @JsonSerializable()
-class GoodsEntityV2 extends BaseJson<GoodsEntityV2> {
+class GoodsEntityV2 extends BaseJson {
   @JsonKey(name: "id")
   int uid;
 
@@ -54,12 +54,10 @@ class GoodsEntityV2 extends BaseJson<GoodsEntityV2> {
       required this.message,
       required this.imageUrl});
 
-  @override
-  GoodsEntityV2 fromJson(Map<String, dynamic> json) {
+  factory GoodsEntityV2.fromJson(Map<String, dynamic> json) {
     return _$GoodsEntityV2FromJson(json);
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return _$GoodsEntityV2ToJson(this);
   }

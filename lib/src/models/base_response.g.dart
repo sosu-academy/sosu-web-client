@@ -58,26 +58,6 @@ Map<String, dynamic> _$PayloadListToJson<T, M>(
       'meta': _$nullableGenericToJson(instance.meta, toJsonM),
     };
 
-ApiResponse<T> _$ApiResponseFromJson<T>(
-  Map<String, dynamic> json,
-  T Function(Object? json) fromJsonT,
-) =>
-    ApiResponse<T>(
-      status: json['status'] as bool,
-      data: _$nullableGenericFromJson(json['data'], fromJsonT),
-      message: json['message'] as String?,
-    );
-
-Map<String, dynamic> _$ApiResponseToJson<T>(
-  ApiResponse<T> instance,
-  Object? Function(T value) toJsonT,
-) =>
-    <String, dynamic>{
-      'status': instance.status,
-      'data': _$nullableGenericToJson(instance.data, toJsonT),
-      'message': instance.message,
-    };
-
 JSendResponseEntity<T> _$JSendResponseEntityFromJson<T>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,

@@ -48,45 +48,22 @@ class PayloadObject<T, M> {
 }
 
 @JsonSerializable(genericArgumentFactories: true)
-class PayloadList<T,M> {
+class PayloadList<T, M> {
   @JsonKey(name: "payload")
   List<T> list;
   @JsonKey(name: "meta")
   M? meta;
 
-  PayloadList({required this.list,this.meta});
+  PayloadList({required this.list, this.meta});
 
   // factory PayloadList.fromJson(
   //     Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
   //   return _$PayloadListFromJson(json, fromJsonT);
   // }
 
-  factory PayloadList.fromJson(
-      Map<String,dynamic> json,
-      T Function(Object? json) fromJsonT,
-      M Function(Object? json) fromJsonM) {
-    return _$PayloadListFromJson(json, fromJsonT,fromJsonM);
-  }
-
-  Map<String, dynamic> toJson(T Function(dynamic) fromJsonT) =>
-      _$PayloadListToJson(this, fromJsonT);
-}
-
-@JsonSerializable(genericArgumentFactories: true)
-class ApiResponse<T> {
-  final bool status;
-  final T? data;
-  final String? message;
-
-  ApiResponse({required this.status, this.data, this.message});
-
-  factory ApiResponse.fromJson(
-      Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
-    return ApiResponse(
-      status: json['status'] as bool,
-      data: json['status'] == true ? fromJsonT(json['data']) : null,
-      message: json['status'] == false ? json['message'] as String : null,
-    );
+  factory PayloadList.fromJson(Map<String, dynamic> json,
+      T Function(Object? json) fromJsonT, M Function(Object? json) fromJsonM) {
+    return _$PayloadListFromJson(json, fromJsonT, fromJsonM);
   }
 }
 

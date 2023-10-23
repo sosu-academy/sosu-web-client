@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sosu_web/src/models/base_response.dart';
+import 'package:sosu_web/src/models/base_response_v2.dart';
 import 'package:sosu_web/src/models/goods_entity.dart';
 import 'package:sosu_web/src/network/apis.dart';
 import 'package:sosu_web/src/network/http_client.dart';
@@ -53,13 +54,13 @@ class MainDashBoardPage extends StatelessWidget {
 
   Widget initTest() {
     return FutureBuilder(
-        future: APIs.fetchGoods(),
+        future: APIs.fetchGoodsV2(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // 데이터를 정상적으로 가져왔을 때 처리
           if (snapshot.hasData) {
-            ApiRes res = snapshot.data;
-            if (res is Success<PayloadList<GoodsEntity>>) {
-              return TvStyle.t4(title: res.getPayload().list[0].message);
+            ApiResponseV2 res = snapshot.data;
+            if (res is SuccessV2<JSendListWithMeta<GoodsEntityV2,PaginationMeta>>) {
+              return TvStyle.t4(title: res.getData().getList()[0].message);
             } else {
               return TvStyle.t4(title: "ERROR");
             }

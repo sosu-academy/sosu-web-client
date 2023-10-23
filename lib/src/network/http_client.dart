@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sosu_web/src/models/base_response.dart';
-import 'package:sosu_web/src/utils/j_logger.dart';
 
+import '../models/base_response_v2.dart';
 import 'http_interceptor.dart';
 
 class HttpClient {
@@ -62,10 +62,35 @@ class HttpClient {
     }
   }
 
-  Future<ApiRes> get<T>(String path, Map<String, String>? queryParameters) async {
+  ApiResponseV2 _handleApiResponse<T>(Response res) {
+    int code = res.statusCode != null ? res.statusCode! : -1;
+    if (code >= 200 && code <= 299) {
+      try {
+        return SuccessV2(res.data ?? {});
+      } catch (err) {
+        if (err is Exception) {
+          return ErrorV2(message: err.toString());
+        } else {
+          return ErrorV2();
+        }
+      }
+    } else {
+      return ErrorV2(message: res.statusMessage);
+    }
+  }
+
+  Future<ApiRes> get<T>(
+      String path, Map<String, String>? queryParameters) async {
     final Response res =
         await _client.get(path, queryParameters: queryParameters);
     return _handleApiRes<T>(res);
+  }
+
+  Future<ApiResponseV2> getV2<T>(
+      String path, Map<String, String>? queryParams) async {
+    return _client
+        .get(path, queryParameters: queryParams)
+        .then((value) => _handleApiResponse(value));
   }
 
 // Future<ApiResponse<PayloadList<GoodsEntity>>> fetchGoods() async {
