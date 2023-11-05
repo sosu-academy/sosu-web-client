@@ -2,117 +2,154 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'base_response.g.dart';
 
-/// Description : HTTP Base Response
+/// Description :
 ///
-/// Created by juhongmin on 2023/04/19
+/// Created by juhongmin on 10/22/23
 
-class ApiErrorException implements Exception {
-  final String msg;
-
-  ApiErrorException(this.msg);
+abstract class BaseJson {
+  // T fromJson(Map<String, dynamic> json);
+  //
+  // Map<String, dynamic> toJson();
 }
 
-// @JsonSerializable(genericArgumentFactories: true)
-// class DataListWithMeta<T, M> {
-//   @JsonKey(name: "payload")
-//   List<T> list;
-//   @JsonKey(name: "meta")
-//   M? meta;
-//
-//   DataListWithMeta({required this.list, this.meta});
-//
-//   factory DataListWithMeta.fromJson(Map<String, dynamic> json) =>
-//       _$DataListWithMetaFromJson(json);
-//
-//   Map<String, dynamic> toJson() => _$DataListWithMetaToJson(this);
-// }
+abstract class ApiResponse {}
 
-/// {
-///  status: true,
-///  data: {
-///   payload: Object or List,
-///   meta: {
-///     pageCount..
-///   },
-///   message: String
-/// }
+class Success<T> extends ApiResponse {
+  final dynamic json;
+  late T _data;
 
-@JsonSerializable(genericArgumentFactories: true)
-class PayloadObject<T, M> {
-  @JsonKey(name: "payload")
-  T obj;
-  @JsonKey(name: "meta")
-  M? meta;
+  Success(this.json);
 
-  PayloadObject({required this.obj, this.meta});
-}
+  void setData(T data) {
+    _data = data;
+  }
 
-@JsonSerializable(genericArgumentFactories: true)
-class PayloadList<T, M> {
-  @JsonKey(name: "payload")
-  List<T> list;
-  @JsonKey(name: "meta")
-  M? meta;
-
-  PayloadList({required this.list, this.meta});
-
-  // factory PayloadList.fromJson(
-  //     Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
-  //   return _$PayloadListFromJson(json, fromJsonT);
-  // }
-
-  factory PayloadList.fromJson(Map<String, dynamic> json,
-      T Function(Object? json) fromJsonT, M Function(Object? json) fromJsonM) {
-    return _$PayloadListFromJson(json, fromJsonT, fromJsonM);
+  T getData() {
+    return _data;
   }
 }
 
-@JsonSerializable(genericArgumentFactories: true)
-class JSendResponseEntity<T> {
-  final T data;
-  final String? message;
-
-  JSendResponseEntity({required this.data, required this.message});
-
-  factory JSendResponseEntity.fromJson(
-      Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
-    T data = fromJsonT(json["data"]);
-    String? msg;
-    if (json.containsKey("message")) {
-      msg = json["message"] as String;
-    }
-    return JSendResponseEntity(data: data, message: msg);
-  }
-}
-
-abstract class ApiRes {}
-
-class Success<T> extends ApiRes {
-  final dynamic _json;
-
-  JSendResponseEntity<T>? _res;
-
-  Success(this._json);
-
-  void handleJsonMapping(T Function(dynamic) fromJsonT) {
-    _res = JSendResponseEntity.fromJson(_json, fromJsonT);
-  }
-
-  T getPayload() {
-    return _res!.data;
-  }
-}
-
-/// HTTP 통신 에러 Error Body를 리턴합니다.
-class HttpError<T> extends ApiRes {
-  final T? data;
-
-  HttpError({this.data});
-}
-
-/// HTTP Exception 이 아닌 다른 에러
-class Error extends ApiRes {
+class Error extends ApiResponse {
   final String? message;
 
   Error({this.message});
+}
+
+///
+/// {
+///   "status" : true,
+///   "data" : {
+///     "payload" : [],
+///     "meta" : {
+///       "size" : 3
+///     }
+///   }
+/// },
+/// {
+///   "status" : false,
+///   "data" : {
+///     "payload" : {
+///       "errorBody" : "EEEE"
+///     }
+///   }
+///   "message" : "에러입니다."
+/// }
+///
+class JSendListWithMeta<T extends BaseJson, M extends BaseJson> {
+  final bool status;
+  final PayloadListWithMeta<T, M> data;
+  String? message;
+
+  JSendListWithMeta({required this.status, required this.data, this.message});
+
+  factory JSendListWithMeta.fromJson(
+      Map<String, dynamic> json,
+      T Function(dynamic json) fromJsonEntity,
+      M Function(dynamic json) fromJsonMeta) {
+    return JSendListWithMeta(
+        status: json["status"] as bool? ?? false,
+        data: PayloadListWithMeta.fromJson(
+            json["data"], fromJsonEntity, fromJsonMeta),
+        message: json["message"] as String? ?? "");
+  }
+
+  List<T> getList() {
+    return data.list;
+  }
+
+  M? getMeta() {
+    return data.meta;
+  }
+}
+
+class PayloadObject<T extends BaseJson> {
+  final T obj;
+
+  PayloadObject({required this.obj});
+
+  factory PayloadObject.fromJson(
+      Map<String, dynamic> json, T Function(Object? json) fromJsonEntity) {
+    T payloadObj = fromJsonEntity(json['payload']);
+    return PayloadObject(obj: payloadObj);
+  }
+}
+
+class PayloadObjectWithMeta<T extends BaseJson, M extends BaseJson> {
+  final T obj;
+  final M? meta;
+
+  PayloadObjectWithMeta({required this.obj, this.meta});
+
+  factory PayloadObjectWithMeta.fromJson(
+      Map<String, dynamic> json,
+      T Function(Object? json) fromJsonEntity,
+      M Function(Object? json) fromJsonMeta) {
+    T payloadObj = fromJsonEntity(json['payload']);
+    Object? metaInput = json['meta'];
+    M? payloadMeta = metaInput == null ? null : fromJsonMeta(metaInput);
+    return PayloadObjectWithMeta(obj: payloadObj, meta: payloadMeta);
+  }
+}
+
+class PayloadList<T extends BaseJson> {
+  final List<T> list;
+
+  PayloadList({required this.list});
+
+  factory PayloadList.fromJson(
+      Map<String, dynamic> json, T Function(Object? json) fromJsonEntity) {
+    List<T> payloadList =
+        (json['payload'] as List<dynamic>).map(fromJsonEntity).toList();
+    return PayloadList<T>(list: payloadList);
+  }
+}
+
+class PayloadListWithMeta<T extends BaseJson, M extends BaseJson> {
+  final List<T> list;
+  final M? meta;
+
+  PayloadListWithMeta({required this.list, this.meta});
+
+  factory PayloadListWithMeta.fromJson(
+      Map<String, dynamic> json,
+      T Function(Object? json) fromJsonEntity,
+      M Function(Object? json) fromJsonMeta) {
+    List<T> payloadList =
+        (json['payload'] as List<dynamic>).map(fromJsonEntity).toList();
+    Object? metaInput = json['meta'];
+    M? payloadMeta = metaInput == null ? null : fromJsonMeta(metaInput);
+    return PayloadListWithMeta(list: payloadList, meta: payloadMeta);
+  }
+}
+
+@JsonSerializable()
+class PaginationMeta extends BaseJson {
+  @JsonKey(name: "total_count")
+  int? totalCount;
+
+  PaginationMeta({required this.totalCount});
+
+  factory PaginationMeta.fromJson(Map<String, dynamic> json) {
+    return _$PaginationMetaFromJson(json);
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sosu_web/src/models/base_response_v2.dart';
+import 'package:sosu_web/src/models/base_response.dart';
 
 part 'goods_entity.g.dart';
 
@@ -8,7 +8,7 @@ part 'goods_entity.g.dart';
 /// Created by juhongmin on 2023/04/19
 
 @JsonSerializable()
-class GoodsEntity {
+class GoodsEntity extends BaseJson {
   @JsonKey(name: "id")
   int uid;
 
@@ -31,34 +31,7 @@ class GoodsEntity {
     return _$GoodsEntityFromJson(json);
   }
 
-  Map<String, dynamic> toJson() => _$GoodsEntityToJson(this);
-}
-
-@JsonSerializable()
-class GoodsEntityV2 extends BaseJson {
-  @JsonKey(name: "id")
-  int uid;
-
-  @JsonKey(name: "title")
-  String title;
-
-  @JsonKey(name: "message")
-  String message;
-
-  @JsonKey(name: "imagePath")
-  String imageUrl;
-
-  GoodsEntityV2(
-      {required this.uid,
-      required this.title,
-      required this.message,
-      required this.imageUrl});
-
-  factory GoodsEntityV2.fromJson(Map<String, dynamic> json) {
-    return _$GoodsEntityV2FromJson(json);
-  }
-
   Map<String, dynamic> toJson() {
-    return _$GoodsEntityV2ToJson(this);
+    return _$GoodsEntityToJson(this);
   }
 }

@@ -20,19 +20,3 @@ Map<String, dynamic> _$GoodsEntityToJson(GoodsEntity instance) =>
       'message': instance.message,
       'imagePath': instance.imageUrl,
     };
-
-GoodsEntityV2 _$GoodsEntityV2FromJson(Map<String, dynamic> json) =>
-    GoodsEntityV2(
-      uid: json['id'] as int,
-      title: json['title'] as String,
-      message: json['message'] as String,
-      imageUrl: json['imagePath'] as String,
-    );
-
-Map<String, dynamic> _$GoodsEntityV2ToJson(GoodsEntityV2 instance) =>
-    <String, dynamic>{
-      'id': instance.uid,
-      'title': instance.title,
-      'message': instance.message,
-      'imagePath': instance.imageUrl,
-    };
