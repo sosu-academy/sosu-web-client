@@ -29,6 +29,22 @@ class Success<T> extends ApiResponse {
   }
 }
 
+class Fail<T> extends ApiResponse {
+  final dynamic json;
+  final int code;
+  late T _data;
+
+  Fail({required this.code, required this.json});
+
+  void setData(T data) {
+    _data = data;
+  }
+
+  T getData() {
+    return _data;
+  }
+}
+
 class Error extends ApiResponse {
   final String? message;
 
@@ -82,15 +98,30 @@ class JSendListWithMeta<T extends BaseJson, M extends BaseJson> {
   }
 }
 
-class PayloadObject<T extends BaseJson> {
-  final T obj;
+class JSendObjWithMeta<T extends BaseJson, M extends BaseJson> {
+  final bool status;
+  final PayloadObjectWithMeta<T, M> data;
+  String? message;
 
-  PayloadObject({required this.obj});
+  JSendObjWithMeta({required this.status, required this.data, this.message});
 
-  factory PayloadObject.fromJson(
-      Map<String, dynamic> json, T Function(Object? json) fromJsonEntity) {
-    T payloadObj = fromJsonEntity(json['payload']);
-    return PayloadObject(obj: payloadObj);
+  factory JSendObjWithMeta.fromJson(
+      Map<String, dynamic> json,
+      T Function(dynamic json) fromJsonEntity,
+      M Function(dynamic json) fromJsonMeta) {
+    return JSendObjWithMeta(
+        status: json["status"] as bool? ?? false,
+        data: PayloadObjectWithMeta.fromJson(
+            json["data"], fromJsonEntity, fromJsonMeta),
+        message: json["message"] as String? ?? "");
+  }
+
+  T? getObject() {
+    return data.obj;
+  }
+
+  M? getMeta() {
+    return data.meta;
   }
 }
 
@@ -108,19 +139,6 @@ class PayloadObjectWithMeta<T extends BaseJson, M extends BaseJson> {
     Object? metaInput = json['meta'];
     M? payloadMeta = metaInput == null ? null : fromJsonMeta(metaInput);
     return PayloadObjectWithMeta(obj: payloadObj, meta: payloadMeta);
-  }
-}
-
-class PayloadList<T extends BaseJson> {
-  final List<T> list;
-
-  PayloadList({required this.list});
-
-  factory PayloadList.fromJson(
-      Map<String, dynamic> json, T Function(Object? json) fromJsonEntity) {
-    List<T> payloadList =
-        (json['payload'] as List<dynamic>).map(fromJsonEntity).toList();
-    return PayloadList<T>(list: payloadList);
   }
 }
 
@@ -151,5 +169,23 @@ class PaginationMeta extends BaseJson {
 
   factory PaginationMeta.fromJson(Map<String, dynamic> json) {
     return _$PaginationMetaFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class EmptyEntity extends BaseJson {
+  EmptyEntity();
+
+  factory EmptyEntity.fromJson(Map<String, dynamic> json) {
+    return _$EmptyEntityFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class EmptyMeta extends BaseJson {
+  EmptyMeta();
+
+  factory EmptyMeta.fromJson(Map<String, dynamic> json) {
+    return _$EmptyMetaFromJson(json);
   }
 }

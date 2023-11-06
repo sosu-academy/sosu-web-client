@@ -14,27 +14,23 @@ extension ApiTransform on Future {
   ApiResponse _handleApiResponse<T>(Response res) {
     int code = res.statusCode != null ? res.statusCode! : -1;
     if (code >= 200 && code <= 299) {
-      try {
-        return Success(res.data ?? {});
-      } catch (err) {
-        if (err is Exception) {
-          return Error(message: err.toString());
-        } else {
-          return Error();
-        }
-      }
+      return Success(res.data ?? "{}");
     } else {
-      return Error(message: res.statusMessage);
+      return Fail(code: code, json: res.data ?? "{}");
     }
   }
 
-  ApiResponse _handleApiError<T>(dynamic error) {
-    if (error is DioException) {
-      dynamic errorBody = error.response?.data;
-      JLogger.d("DioException ${error.response?.data}");
+  ApiResponse _handleApiError<T>(dynamic err) {
+    if (err is DioException) {
+      Response? res = err.response;
+      // Response Null 일때 에러 타입 추가 해야함
+      int? code = res?.statusCode;
+      dynamic errorBody = res?.data;
+      JLogger.d("DioException [$code] Body $errorBody");
+      return Fail(code: code ?? 999, json: errorBody ?? "{}");
     } else {
-      JLogger.d("Other $error");
+      JLogger.d("ERROR $err");
+      return Error(message: err.toString());
     }
-    return Error(message: "dd");
   }
 }

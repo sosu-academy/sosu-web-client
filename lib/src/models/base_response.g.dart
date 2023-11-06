@@ -15,3 +15,13 @@ Map<String, dynamic> _$PaginationMetaToJson(PaginationMeta instance) =>
     <String, dynamic>{
       'total_count': instance.totalCount,
     };
+
+EmptyEntity _$EmptyEntityFromJson(Map<String, dynamic> json) => EmptyEntity();
+
+Map<String, dynamic> _$EmptyEntityToJson(EmptyEntity instance) =>
+    <String, dynamic>{};
+
+EmptyMeta _$EmptyMetaFromJson(Map<String, dynamic> json) => EmptyMeta();
+
+Map<String, dynamic> _$EmptyMetaToJson(EmptyMeta instance) =>
+    <String, dynamic>{};

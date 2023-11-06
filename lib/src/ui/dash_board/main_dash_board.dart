@@ -1,11 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:sosu_web/src/models/base_response.dart';
-import 'package:sosu_web/src/models/base_response_v2.dart';
 import 'package:sosu_web/src/models/goods_entity.dart';
 import 'package:sosu_web/src/network/apis.dart';
-import 'package:sosu_web/src/network/http_client.dart';
 import 'package:sosu_web/src/ui/style/design_system.dart';
 import 'package:sosu_web/src/utils/j_logger.dart';
 
@@ -23,6 +19,7 @@ class MainDashBoardPage extends StatelessWidget {
         children: [
           initChildrenDashboard(),
           initTest(),
+          initErrorTest(),
           CardStyle.c1(TvStyle.t2(title: "3/29 수납예정 학생", color: Colors.blue),
               TvStyle.t4(title: "4명")),
           Center(child: Text("대쉬보드 화면입니다."))
@@ -54,15 +51,16 @@ class MainDashBoardPage extends StatelessWidget {
 
   Widget initTest() {
     return FutureBuilder(
-        future: APIs.fetchGoodsV2(),
+        future: APIs.fetchGoods(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // 데이터를 정상적으로 가져왔을 때 처리
           if (snapshot.hasData) {
-            ApiResponseV2 res = snapshot.data;
-            if (res is SuccessV2<JSendListWithMeta<GoodsEntityV2,PaginationMeta>>) {
-              return TvStyle.t4(title: res.getData().getList()[0].message);
+            ApiResponse res = snapshot.data;
+            if (res is Success) {
+              JSendListWithMeta<GoodsEntity,PaginationMeta> data = res.getData();
+              return TvStyle.t4(title: data.getList()[0].message);
             } else {
-              return TvStyle.t4(title: "ERROR");
+              return TvStyle.t4(title: res.toString());
             }
           } else if (snapshot.hasError) {
             return TvStyle.t4(title: "ERROR ${snapshot.error}");
@@ -70,6 +68,18 @@ class MainDashBoardPage extends StatelessWidget {
             // 대기중일때
             return const Center(child: CircularProgressIndicator());
           }
+        });
+  }
+
+  Widget initErrorTest() {
+    return FutureBuilder(
+        future: APIs.fetchError(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            ApiResponse res = snapshot.data;
+            JLogger.d("initErrorTest $res");
+          }
+          return const Center(child: CircularProgressIndicator());
         });
   }
 
